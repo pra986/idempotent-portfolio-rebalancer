@@ -1,0 +1,35 @@
+{
+  "project": "idempotent-portfolio-rebalancer",
+  "cases": [
+    {
+      "id": "eval_fresh_rebalance",
+      "description": "Fresh MarketStack quotes produce a 100% allocation plan and pass read-back verification",
+      "run_id": "run-2026-11-17-001",
+      "max_quote_age_seconds": 300,
+      "expected_status": "COMMITTED",
+      "expected_read_back_verified": true
+    },
+    {
+      "id": "eval_stale_quote_rejection",
+      "description": "Quotes older than max_quote_age_seconds are rejected before staging",
+      "run_id": "run-2026-11-17-002",
+      "max_quote_age_seconds": 60,
+      "quote_age_seconds": 900,
+      "expected_status": "REJECTED_STALE_QUOTE"
+    },
+    {
+      "id": "eval_duplicate_run_id",
+      "description": "Replaying a committed run_id returns DUPLICATE_SKIPPED without mutating holdings",
+      "run_id": "run-2026-11-17-001",
+      "expected_status": "DUPLICATE_SKIPPED"
+    },
+    {
+      "id": "eval_read_back_mismatch_rollback",
+      "description": "Simulated sheet write corruption triggers rollback and READ_BACK_MISMATCH",
+      "run_id": "run-2026-11-17-003",
+      "simulate_corrupted_write": true,
+      "expected_status": "READ_BACK_MISMATCH",
+      "expected_read_back_verified": false
+    }
+  ]
+}
